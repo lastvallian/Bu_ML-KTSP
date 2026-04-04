@@ -1,0 +1,63 @@
+# Ray Cluster Configuration for KTSP Meta
+# This file can be used to configure Ray cluster settings
+
+# Cluster settings
+cluster:
+  # Head node address (for connecting to remote cluster)
+  # Leave empty for local cluster
+  address: null  # e.g., "ray://head-node:10001"
+  
+  # Resource limits
+  num_cpus: null  # null = auto-detect, or specify number
+  num_gpus: null  # null = auto-detect, or specify number
+  object_store_memory: null  # null = auto, or specify in bytes
+  
+  # Runtime environment
+  runtime_env:
+    working_dir: "."
+    pip: []  # Additional pip packages if needed
+
+# Task settings
+tasks:
+  # Timeout for tasks (seconds)
+  timeout: 3600  # 1 hour
+  
+  # Retry settings
+  max_retries: 2
+  
+  # Resource allocation per task
+  load_data:
+    num_cpus: 1
+    max_retries: 2
+  
+  preprocess_data:
+    num_cpus: 2
+    max_retries: 2
+  
+  train_model:
+    num_cpus: 4
+    max_retries: 2
+
+# Safety settings
+safety:
+  # Maximum memory usage per task (bytes)
+  max_memory_per_task: null  # null = no limit
+  
+  # Enable resource monitoring
+  monitor_resources: true
+  
+  # Auto-cleanup failed tasks
+  auto_cleanup: true
+  
+  # Task timeout (seconds)
+  task_timeout: 3600
+
+# Logging
+logging:
+  level: "INFO"  # DEBUG, INFO, WARNING, ERROR
+  file: null  # null = console only, or specify file path
+
+
+
+
+

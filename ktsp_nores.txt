@@ -1,0 +1,166 @@
+jupyter nbconvert --to script utils.ipynb
+jupyter nbconvert --to script ktsp.ipynb
+jupyter nbconvert --to script hierarchical_classifier.ipynb
+
+
+jupyter nbconvert --to script run_HC_KTSP.ipynb
+
+git remote add origin https://github.com/lastvallian/Bu_ML-KTSP.git
+
+
+dministrator@USER-20231020KO MINGW64 /d/fitchburg/Bu_ML/KTSP (main)
+
+findstr "Selected Shiai is already in progress." *.*
+
+Bjql@56781234
+
+
+说明与注意事项（请务必读）
+
+数据方向：本 pipeline 统一约定 X 为 (n_features, n_samples) —— 所有内部切片/索引都按这个约定处理。load_dataset() 已经尽力判断并返回该格式。不要在外部再翻转 X（否则会出错）。
+
+标签：若文件没有显式标签行（如 prostate2/prostate3），必须传 assume_half_split_for_unlabeled=True 或自己提供 labels。默认会 raise Error 提醒你。
+
+多分类：HierarchicalClassifier 支持任意类别数，但 base_model 必须用于二分类子问题（k-TSP 在本实现中为二分类）。
+
+速度：当前 KTopScoringPairs.fit 是蛮力式对所有基因对计算分数（O(features^2 * samples)）。若特征 ~2000，可运行但会慢；若上万特征，则建议做特征预筛（如方差筛、差异表达筛）再用 k-TSP。
+
+扩展：你可以把 KTopScoringPairs 的 _pair_score 改为更高效的向量化实现或用 C/numba 加速
+
+只转置一次，在 load_dataset → X.T
+
+_build_tree 切片 X[:, mask]
+
+base_model 内不要再转置
+
+predict 遍历列：X[:, k]
+
+
+每个节点的：
+
+使用的 K-TSP 特征对（pairs）
+
+特征对的 scores
+
+每个节点训练数据集的大小（samples per class）
+
+每个节点的 K-TSP 内部准确率
+
+样本通过该节点时的决策规则解释
+
+
+
+Node depth 0:
+  Classes: [0,1,2]
+  Split: class 1 vs rest
+  Samples: left=24, right=38
+  Pairs: [(10,21), (300,122), ...]
+  Scores: [0.91, 0.89, ...]
+
+
+特征在整棵树中的出现频率（Feature importance）
+
+虽然 K-TSP 不产生传统 feature importance，但你可以通过统计 pair 出现频率来得到 importance 分布。
+
+特征 i 的重要性 = 在所有 K-TSP 节点中出现的次数
+
+我可以帮你添加：
+
+hclf.feature_importance()
+
+
+输出：
+
+Gene 132: 5 times
+Gene 409: 4 times
+Gene 17 : 3 times
+...
+
+5. 预测时可解释路径（Decision path）
+
+给每个样本输出：
+
+它走了树的哪条路径
+
+每个节点的投票结果
+
+最终预测的原因
+
+示例：
+
+Sample 12 prediction: Class = Tumor
+Path:
+  Node 0: (gene10 > gene21) → left
+  Node 1: (gene45 < gene88) → right
+  Node 3: leaf → "Tumor"
+
+
+非常适合作为医学解释输出。
+
+6. 混淆矩阵 + 节点级别的混淆矩阵
+
+全局：
+
+Confusion matrix:
+[[20,0,1],
+ [0,18,3],
+ [1,2,17]]
+
+
+节点局部（例如根节点）：
+
+Root node classification accuracy: 0.87
+Confusion:
+[[24,1],
+ [4,33]]
+
+
+7. 节点的信息增益（Information gain），或 Gini decrease
+
+虽然 K-TSP 不是树模型，但你可以基于：
+
+左右样本比例
+
+节点纯度（entropy / gini）
+
+计算：
+
+IG(root → children) = H(parent) − weighted(H(left), H(right))
+
+
+可量化每个节点的分裂价值。
+
+
+8. 可视化整棵树（GraphViz）
+
+我可以帮你输出 DOT 文件：
+
+Root → Node 1 [label="gene10>gene21"]
+Node 1 → Node 2 [label="gene45<gene88"]
+...
+
+
+最终可以导出一张层次 K-TSP 决策树图。
+
+🧠 9. 节点对特征对的解释（自然语言）
+
+如：
+
+在根节点，基因 10 与基因 21 形成最重要的特征对。
+当 gene10 的表达量高于 gene21 时，更倾向于判为“节点对特征对的解释（自然语言）
+
+如：
+
+在根节点，基因 10 与基因 21 形成最重要的特征对。
+当 gene10 的表达量高于 gene21 时，更倾向于判为“Tumor”。
+
+
+可用于学术报告。
+
+print_tree()
+✔️ print_pairs()（你已有）
+✔️ print_tree_stats()
+✔️ feature_importance()
+✔️ predict_with_path()
+✔️ visualize_tree()
+✔️ 节点级 K-TSP 准确率

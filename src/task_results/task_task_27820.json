@@ -1,0 +1,8 @@
+{
+  "status": "submitted",
+  "task_id": "task_27820",
+  "models": [
+    "Naive Bayes",
+    "kNN"
+  ]
+}
