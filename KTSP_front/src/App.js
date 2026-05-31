@@ -20,6 +20,20 @@ function App() {
 
     // For state of Windows open or not
     const [isModalOpen, setIsModalOpen] = useState(false);
+   // For name of hostname
+    const currentHostname = window.location.hostname;
+   //Using the API_BASE_URL
+   let API_BASE_URL;
+
+   if (currentHostname.includes("localhost") || currentHostname.includes("127.0.0.1")) {
+    // Using Localhost if host in localmachein
+    API_BASE_URL = "http://localhost:8000";
+  } else {
+    // IFin GitHub Codespaces cloud ,Automatically replace -3000 for -8000
+    const backendHostname = currentHostname.replace("-3000", "-8000");
+    API_BASE_URL = `https://${backendHostname}`;
+  }
+
    //sychn for Upadating modelResults when updating uploadResult
     useEffect(()=>{
 
@@ -51,7 +65,7 @@ function App() {
       formData.append("file",testFile);
       formData.append("folder_name", folderName);
       try{
-         const response=await fetch("http://localhost:8000/predict",
+         const response = await fetch(`${API_BASE_URL}/predict`,
          { method:"POST",
            body: formData,
          });
