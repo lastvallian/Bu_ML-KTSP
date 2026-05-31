@@ -1,11 +1,12 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[5]:
+# In[6]:
 
 
 import sys
-sys.path.append(r"C:\Users\Administrator\KTSP")
+current_dir = os.path.dirname(os.path.abspath(__file__)) if '__file__' in locals() else os.getcwd()
+sys.path.append(current_dir)
 import sys
 import os
 import shutil
@@ -36,7 +37,8 @@ async def lifespan(app: FastAPI):
 app = FastAPI(lifespan=lifespan)
 origins=[
     "http://localhost:3000",
-    "http://127.0.0.1:3000"
+    "http://127.0.0.1:3000",
+    *
 ];
 
 app.add_middleware(
