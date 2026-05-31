@@ -1,6 +1,6 @@
 {
     "name": "FastAPI & React (Bu_ML-KTSP)",
-    "image": "://microsoft.com",
+     "image": "://microsoft.com",
     
     // Automation for dependence
     "postCreateCommand": "cd python/KTSP_Meta && pip install -r requirements.txt && cd ../../KTSP_front && npm install",
