@@ -2,17 +2,18 @@
     "name": "FastAPI & React (Bu_ML-KTSP)",
      "image": "://microsoft.com",
     
-    // Automation for dependence
+    // Automatically switch to directories and install backend and frontend dependencies
     "postCreateCommand": "cd python/KTSP_Meta && pip install -r requirements.txt && cd ../../KTSP_front && npm install",
     
-    // Open to 2 terminals for FastAPI 和 React
+    // Automatically split terminals and launch both FastAPI and React servers concurrently
     "postAttachCommand": "code --terminal-directory=python/KTSP_Meta -e 'uvicorn main:app --reload' && code --terminal-directory=KTSP_front -e 'npm start'",
     
-    // Automated for two ports
+    // Forward the React local port (3000) and FastAPI local port (8000) to public URLs
     "forwardPorts": [3000, 8000],
     
     "customizations": {
         "vscode": {
+            // Automatically install essential extensions for Python and Frontend development
             "extensions": [
                 "ms-python.python",
                 "ms-python.vscode-pylance",
