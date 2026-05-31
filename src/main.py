@@ -4,7 +4,7 @@
 # In[6]:
 
 
-import sys
+import sys,os
 current_dir = os.path.dirname(os.path.abspath(__file__)) if '__file__' in locals() else os.getcwd()
 sys.path.append(current_dir)
 import sys
@@ -38,8 +38,8 @@ app = FastAPI(lifespan=lifespan)
 origins=[
     "http://localhost:3000",
     "http://127.0.0.1:3000",
-    *
-];
+    "*"
+]
 
 app.add_middleware(
      CORSMiddleware,
