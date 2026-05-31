@@ -1,20 +1,18 @@
 {
-    "name": "FastAPI & React Development",
-    // Using containing  Python and  Node.js  for mirror 
+    "name": "FastAPI & React (Bu_ML-KTSP)",
     "image": "://microsoft.com",
     
-    //initializing container automated install for environment command 
-    "postCreateCommand": "cd backend && pip install -r requirements.txt && cd ../frontend && npm install",
+    // Automation for dependence
+    "postCreateCommand": "cd python/KTSP_Meta && pip install -r requirements.txt && cd ../../KTSP_front && npm install",
     
-    // VS Code initilization and automated execution
-    "postAttachCommand": "code --terminal-directory=backend -e 'uvicorn main:app --reload' && code --terminal-directory=frontend -e 'npm start'",
+    // Open to 2 terminals for FastAPI 和 React
+    "postAttachCommand": "code --terminal-directory=python/KTSP_Meta -e 'uvicorn main:app --reload' && code --terminal-directory=KTSP_front -e 'npm start'",
     
-    // Automated forward  React 的 3000 and  FastAPI 的 8000 to browser
+    // Automated for two ports
     "forwardPorts": [3000, 8000],
     
     "customizations": {
         "vscode": {
-            // automated install for vscode plugs
             "extensions": [
                 "ms-python.python",
                 "ms-python.vscode-pylance",
@@ -23,3 +21,4 @@
         }
     }
 }
+
