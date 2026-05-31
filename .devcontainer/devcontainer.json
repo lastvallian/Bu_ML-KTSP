@@ -1,19 +1,29 @@
 {
     "name": "FastAPI & React (Bu_ML-KTSP)",
-     "image": "://microsoft.com",
+    // 1. Use a standard Ubuntu base image instead of Alpine
+    "image": "://microsoft.com",
     
-    // Automatically switch to directories and install backend and frontend dependencies
+    // 2. Install both Python and Node.js runtimes concurrently via features
+    "features": {
+        "ghcr.io/devcontainers/features/python:1": {
+            "version": "latest"
+        },
+        "ghcr.io/devcontainers/features/node:1": {
+            "version": "lts"
+        }
+    },
+    
+    // 3. Install backend pip and frontend npm dependencies after container creation
     "postCreateCommand": "cd python/KTSP_Meta && pip install -r requirements.txt && cd ../../KTSP_front && npm install",
     
-    // Automatically split terminals and launch both FastAPI and React servers concurrently
-    "postAttachCommand": "code --terminal-directory=python/KTSP_Meta -e 'uvicorn main:app --reload' && code --terminal-directory=KTSP_front -e 'npm start'",
+    // 4. Launch both servers in the background simultaneously to prevent blocking
+    "postAttachCommand": "(cd python/KTSP_Meta && nohup uvicorn main:app --host 0.0.0.0 --port 8000 > fastapi.log 2>&1 &) && (cd KTSP_front && nohup npm start > react.log 2>&1 &)",
     
-    // Forward the React local port (3000) and FastAPI local port (8000) to public URLs
+    // 5. Forward the React (3000) and FastAPI (8000) ports to public URLs
     "forwardPorts": [3000, 8000],
     
     "customizations": {
         "vscode": {
-            // Automatically install essential extensions for Python and Frontend development
             "extensions": [
                 "ms-python.python",
                 "ms-python.vscode-pylance",
