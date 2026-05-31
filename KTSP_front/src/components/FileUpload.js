@@ -10,13 +10,18 @@ function FileUpload({onUploadSuccess,selectedModels,usePCA}) {
     // 2.Calculating API_Base_address
     let API_BASE_URL;
     if (currentHostname.includes("localhost") || currentHostname.includes("127.0.0.1")) {
+        // Safe route for your local D:\ directory development environment
         API_BASE_URL = "http://localhost:8000";
     } else {
-        // Automatically change -3000 to -8000
-        const backendHostname = currentHostname.replace("-3000", "-8000");
-        API_BASE_URL = `https://${backendHostname}`;
+        // Bulletproof routing logic for GitHub Codespaces cloud servers
+        if (currentHostname.includes("-3000")) {
+            // Standard replacement: swap the frontend port block (-3000) with the backend port (-8000)
+            API_BASE_URL = `https://${currentHostname.replace("-3000", "-8000")}`;
+        } else {
+            // Regular expression safety net: forcibly capture any port block and redirect it to -8000
+            API_BASE_URL = `https://${currentHostname.replace(/-\d+(?=\.app\.github\.dev)/, "-8000")}`;
+        }
     }
-
 
     const handleFileChange = (e) => {
         setFile(e.target.files[0]);
