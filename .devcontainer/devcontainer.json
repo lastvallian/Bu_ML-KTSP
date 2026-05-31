@@ -1,0 +1,25 @@
+{
+    "name": "FastAPI & React Development",
+    // Using containing  Python and  Node.js  for mirror 
+    "image": "://microsoft.com",
+    
+    //initializing container automated install for environment command 
+    "postCreateCommand": "cd backend && pip install -r requirements.txt && cd ../frontend && npm install",
+    
+    // VS Code initilization and automated execution
+    "postAttachCommand": "code --terminal-directory=backend -e 'uvicorn main:app --reload' && code --terminal-directory=frontend -e 'npm start'",
+    
+    // Automated forward  React 的 3000 and  FastAPI 的 8000 to browser
+    "forwardPorts": [3000, 8000],
+    
+    "customizations": {
+        "vscode": {
+            // automated install for vscode plugs
+            "extensions": [
+                "ms-python.python",
+                "ms-python.vscode-pylance",
+                "dbaeumer.vscode-eslint"
+            ]
+        }
+    }
+}
